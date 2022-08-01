@@ -1,5 +1,5 @@
-#ifndef SKELETONS_BASICRANDOM_HPP
-#define SKELETONS_BASICRANDOM_HPP
+#ifndef SKELETONS_RANDOM_HPP
+#define SKELETONS_RANDOM_HPP
 
 #include <hpx/include/iostreams.hpp>
 
@@ -11,14 +11,14 @@
 
 namespace YewPar { namespace Skeletons {
 
-namespace detailBasicRandom {
+namespace Random_ {
 template <typename Generator, typename ...Args>
-struct BasicRandomSubtreeTask;
+struct SubtreeTask;
 }
 
 
 template <typename Generator, typename ...Args>
-struct BasicRandom {
+struct Random {
   typedef typename Generator::Nodetype Node;
   typedef typename Generator::Spacetype Space;
 
@@ -42,7 +42,7 @@ struct BasicRandom {
   typedef typename parameter::value_type<args, API::tag::DepthBoundedPoolPolicy, Workstealing::Policies::DepthPoolPolicy>::type Policy;
 
   static void printSkeletonDetails() {
-    hpx::cout << "Skeleton Type: BasicRandom\n";
+    hpx::cout << "Skeleton Type: Random\n";
     hpx::cout << "Enumeration : " << std::boolalpha << isEnumeration << "\n";
     hpx::cout << "Optimisation: " << std::boolalpha << isOptimisation << "\n";
     hpx::cout << "Decision: " << std::boolalpha << isDecision << "\n";
@@ -71,7 +71,7 @@ struct BasicRandom {
     auto reg = Registry<Space, Node, Bound, Enum>::gReg;
 
     auto depth = childDepth;
-    //auto backtracks = 0;
+    auto backtracks = 0;
 
     // Init the stack
     StackElem<Generator> initElem(space, n);
@@ -83,7 +83,6 @@ struct BasicRandom {
     }
 
     auto stackDepth = 0;
-    srand((unsigned)time(NULL)); //initial the seed with sys time
     while (stackDepth >= 0) {
 
       if constexpr(isDecision) {
@@ -92,6 +91,7 @@ struct BasicRandom {
         }
       }
 
+      srand((unsigned)time(NULL)); //initial the seed with sys time
       // We spawn when we have exhausted our backtrack budget
       if ((rand()%100) < params.spawnProbability) {
         // Spawn everything at the highest possible depth
@@ -120,7 +120,7 @@ struct BasicRandom {
         else if (pn == ProcessNodeRet::Break) {
           stackDepth--;
           depth--;
-          //backtracks++;
+          backtracks++;
           continue;
         }
 
@@ -135,7 +135,7 @@ struct BasicRandom {
           if (depth == reg->params.maxDepth) {
             stackDepth--;
             depth--;
-            //backtracks++;
+            backtracks++;
             continue;
           }
         }
@@ -145,7 +145,7 @@ struct BasicRandom {
       } else {
         stackDepth--;
         depth--;
-        //backtracks++;
+        backtracks++;
       }
     }
   }
@@ -177,7 +177,7 @@ struct BasicRandom {
     auto pfut = prom.get_future();
     auto pid  = prom.get_id();
 
-    detailBasicRandom::BasicRandomSubtreeTask<Generator, Args...> t;
+    Random_::SubtreeTask<Generator, Args...> t;
     hpx::util::function<void(hpx::naming::id_type)> task;
     task = hpx::util::bind(t, hpx::util::placeholders::_1, taskRoot, childDepth, pid);
 
@@ -233,12 +233,12 @@ struct BasicRandom {
   }
 };
 
-namespace detailBasicRandom {
+namespace Random_ {
 template <typename Generator, typename ...Args>
-struct BasicRandomSubtreeTask : hpx::actions::make_action<
-  decltype(&BasicRandom<Generator, Args...>::subtreeTask),
-  &BasicRandom<Generator, Args...>::subtreeTask,
-  BasicRandomSubtreeTask<Generator, Args...>>::type {};
+struct SubtreeTask : hpx::actions::make_action<
+  decltype(&Random<Generator, Args...>::subtreeTask),
+  &Random<Generator, Args...>::subtreeTask,
+  SubtreeTask<Generator, Args...>>::type {};
 
 }
 
@@ -247,7 +247,7 @@ struct BasicRandomSubtreeTask : hpx::actions::make_action<
 namespace hpx { namespace traits {
 
 template <typename Generator, typename ...Args>
-struct action_stacksize<YewPar::Skeletons::detailBasicRandom::BasicRandomSubtreeTask<Generator, Args...> >  {
+struct action_stacksize<YewPar::Skeletons::Random_::SubtreeTask<Generator, Args...> >  {
   enum { value = threads::thread_stacksize_huge };
 };
 

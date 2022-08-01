@@ -73,7 +73,7 @@ struct Params {
 
   // Budget
   // FIXME: How to determine a good value for this?
-  unsigned backtrackBudget = 200;
+  unsigned backtrackBudget = 50;
 
   // Random
   unsigned spawnProbability = 50;

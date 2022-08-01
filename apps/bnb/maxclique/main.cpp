@@ -340,17 +340,17 @@ int hpx_main(boost::program_options::variables_map & opts) {
   } else if (skeletonType == "basicrandom") {
     if (decisionBound != 0) {
     YewPar::Skeletons::API::Params<int> searchParameters;
-    searchParameters.backtrackBudget = opts["spawn-probability"].as<unsigned>();
+    searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>();
     searchParameters.expectedObjective = decisionBound;
-    sol = YewPar::Skeletons::BasicRandom<GenNode,
+    sol = YewPar::Skeletons::Random<GenNode,
                                     YewPar::Skeletons::API::BoundFunction<upperBound_func>,
                                     YewPar::Skeletons::API::Decision,
                                     YewPar::Skeletons::API::PruneLevel>
         ::search(graph, root, searchParameters);
     } else {
       YewPar::Skeletons::API::Params<int> searchParameters;
-      searchParameters.backtrackBudget = opts["spawn-probability"].as<unsigned>();
-      sol = YewPar::Skeletons::BasicRandom<GenNode,
+      searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>();
+      sol = YewPar::Skeletons::Random<GenNode,
                                       YewPar::Skeletons::API::Optimisation,
                                       YewPar::Skeletons::API::BoundFunction<upperBound_func>,
                                       YewPar::Skeletons::API::PruneLevel>
