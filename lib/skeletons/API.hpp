@@ -75,6 +75,10 @@ struct Params {
   // FIXME: How to determine a good value for this?
   unsigned backtrackBudget = 200;
 
+  // Random
+  unsigned spawnProbability = 50;
+
+
   // Needed to push to registries on all nodes
   template <class Archive>
   void serialize(Archive & ar, const unsigned int version) {
@@ -84,6 +88,7 @@ struct Params {
     ar & spawnDepth;
     ar & stealAll;
     ar & backtrackBudget;
+    ar & spawnProbability;
   }
 };
 

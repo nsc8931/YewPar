@@ -23,6 +23,7 @@
 #include "skeletons/StackStealing.hpp"
 #include "skeletons/Ordered.hpp"
 #include "skeletons/Budget.hpp"
+#include "skeletons/BasicRandom.hpp"
 
 #include "util/func.hpp"
 #include "util/NodeGenerator.hpp"
@@ -331,6 +332,25 @@ int hpx_main(boost::program_options::variables_map & opts) {
       YewPar::Skeletons::API::Params<int> searchParameters;
       searchParameters.backtrackBudget = opts["backtrack-budget"].as<unsigned>();
       sol = YewPar::Skeletons::Budget<GenNode,
+                                      YewPar::Skeletons::API::Optimisation,
+                                      YewPar::Skeletons::API::BoundFunction<upperBound_func>,
+                                      YewPar::Skeletons::API::PruneLevel>
+          ::search(graph, root, searchParameters);
+    }
+  } else if (skeletonType == "basicrandom") {
+    if (decisionBound != 0) {
+    YewPar::Skeletons::API::Params<int> searchParameters;
+    searchParameters.backtrackBudget = opts["spawn-probability"].as<unsigned>();
+    searchParameters.expectedObjective = decisionBound;
+    sol = YewPar::Skeletons::BasicRandom<GenNode,
+                                    YewPar::Skeletons::API::BoundFunction<upperBound_func>,
+                                    YewPar::Skeletons::API::Decision,
+                                    YewPar::Skeletons::API::PruneLevel>
+        ::search(graph, root, searchParameters);
+    } else {
+      YewPar::Skeletons::API::Params<int> searchParameters;
+      searchParameters.backtrackBudget = opts["spawn-probability"].as<unsigned>();
+      sol = YewPar::Skeletons::BasicRandom<GenNode,
                                       YewPar::Skeletons::API::Optimisation,
                                       YewPar::Skeletons::API::BoundFunction<upperBound_func>,
                                       YewPar::Skeletons::API::PruneLevel>
