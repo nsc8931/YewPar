@@ -71,7 +71,7 @@ struct BasicRandom {
     auto reg = Registry<Space, Node, Bound, Enum>::gReg;
 
     auto depth = childDepth;
-    auto backtracks = 0;
+    //auto backtracks = 0;
 
     // Init the stack
     StackElem<Generator> initElem(space, n);
@@ -104,7 +104,7 @@ struct BasicRandom {
             break;  //only spawn the highest one
           }
         }
-        backtracks = 0;
+        //backtracks = 0;
       }
 
       // If there's still children at this stackDepth we move into them
@@ -120,7 +120,7 @@ struct BasicRandom {
         else if (pn == ProcessNodeRet::Break) {
           stackDepth--;
           depth--;
-          backtracks++;
+          //backtracks++;
           continue;
         }
 
@@ -135,7 +135,7 @@ struct BasicRandom {
           if (depth == reg->params.maxDepth) {
             stackDepth--;
             depth--;
-            backtracks++;
+            //backtracks++;
             continue;
           }
         }
@@ -145,7 +145,7 @@ struct BasicRandom {
       } else {
         stackDepth--;
         depth--;
-        backtracks++;
+        //backtracks++;
       }
     }
   }
@@ -177,7 +177,7 @@ struct BasicRandom {
     auto pfut = prom.get_future();
     auto pid  = prom.get_id();
 
-    detail::BasicRandomSubtreeTask<Generator, Args...> t;
+    detailBasicRandom::BasicRandomSubtreeTask<Generator, Args...> t;
     hpx::util::function<void(hpx::naming::id_type)> task;
     task = hpx::util::bind(t, hpx::util::placeholders::_1, taskRoot, childDepth, pid);
 
@@ -233,7 +233,7 @@ struct BasicRandom {
   }
 };
 
-namespace detail {
+namespace detailBasicRandom {
 template <typename Generator, typename ...Args>
 struct BasicRandomSubtreeTask : hpx::actions::make_action<
   decltype(&BasicRandom<Generator, Args...>::subtreeTask),
@@ -247,7 +247,7 @@ struct BasicRandomSubtreeTask : hpx::actions::make_action<
 namespace hpx { namespace traits {
 
 template <typename Generator, typename ...Args>
-struct action_stacksize<YewPar::Skeletons::detail::BasicRandomSubtreeTask<Generator, Args...> >  {
+struct action_stacksize<YewPar::Skeletons::detailBasicRandom::BasicRandomSubtreeTask<Generator, Args...> >  {
   enum { value = threads::thread_stacksize_huge };
 };
 
