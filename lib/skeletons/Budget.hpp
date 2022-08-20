@@ -5,10 +5,6 @@
 
 #include <boost/format.hpp>
 
-#include<random>
-#include<stdlib.h>
-#include<time.h>
-
 namespace YewPar { namespace Skeletons {
 
 namespace detail {
@@ -91,9 +87,8 @@ struct Budget {
         }
       }
 
-      srand((unsigned)time(NULL)); //initial the seed with sys time
       // We spawn when we have exhausted our backtrack budget
-      if ((rand()%100) < params.spawnProbability) {
+      if (backtracks == params.backtrackBudget) {
         // Spawn everything at the highest possible depth
         for (auto i = 0; i < stackDepth; ++i) {
           if (genStack[i].seen < genStack[i].gen.numChildren) {
@@ -101,10 +96,9 @@ struct Budget {
               genStack[i].seen++;
               childFutures.push_back(createTask(childDepth + i + 1, genStack[i].gen.next()));
             }
-            break;  //only spawn the highest one
           }
         }
-        //backtracks = 0;
+        backtracks = 0;
       }
 
       // If there's still children at this stackDepth we move into them

@@ -73,10 +73,10 @@ struct Params {
 
   // Budget
   // FIXME: How to determine a good value for this?
-  unsigned backtrackBudget = 50;
+  unsigned backtrackBudget = 200;
 
-  // Random
-  unsigned spawnProbability = 50;
+  // Random spawnProbability = 1/n
+  unsigned spawnProbability = 1000000;
 
 
   // Needed to push to registries on all nodes

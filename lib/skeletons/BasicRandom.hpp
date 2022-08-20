@@ -71,8 +71,7 @@ struct Random {
     auto reg = Registry<Space, Node, Bound, Enum>::gReg;
 
     auto depth = childDepth;
-    auto backtracks = 0;
-
+    
     // Init the stack
     StackElem<Generator> initElem(space, n);
     GeneratorStack<Generator> genStack(maxStackDepth, initElem);
@@ -90,10 +89,9 @@ struct Random {
           return;
         }
       }
-
-      srand((unsigned)time(NULL)); //initial the seed with sys time
+      unsigned sp = (rand()<<15)+rand();
       // We spawn when we have exhausted our backtrack budget
-      if ((rand()%100) < params.spawnProbability) {
+      if (sp < 1073741824/params.spawnProbability) {
         // Spawn everything at the highest possible depth
         for (auto i = 0; i < stackDepth; ++i) {
           if (genStack[i].seen < genStack[i].gen.numChildren) {
@@ -104,7 +102,6 @@ struct Random {
             break;  //only spawn the highest one
           }
         }
-        //backtracks = 0;
       }
 
       // If there's still children at this stackDepth we move into them
@@ -120,7 +117,6 @@ struct Random {
         else if (pn == ProcessNodeRet::Break) {
           stackDepth--;
           depth--;
-          backtracks++;
           continue;
         }
 
@@ -135,7 +131,6 @@ struct Random {
           if (depth == reg->params.maxDepth) {
             stackDepth--;
             depth--;
-            backtracks++;
             continue;
           }
         }
@@ -145,7 +140,6 @@ struct Random {
       } else {
         stackDepth--;
         depth--;
-        backtracks++;
       }
     }
   }
