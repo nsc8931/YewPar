@@ -92,7 +92,6 @@ struct Random {
       
       if (params.spawnProbability != 0) {
 	unsigned sp = (rand()<<15)+rand();
-        // We spawn when we have exhausted our backtrack budget
         if (sp < 1073741824/params.spawnProbability) {
           // Spawn everything at the highest possible depth
           for (auto i = 0; i < stackDepth; ++i) {
