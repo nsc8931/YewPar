@@ -96,17 +96,17 @@ int hpx_main(boost::program_options::variables_map & opts) {
   //                                             YewPar::Skeletons::API::Enumerator<CountDepths>,
   //                                             YewPar::Skeletons::API::DepthLimited>
   //            ::search(Empty(), root, searchParameters);
-  // } else if (skeleton == "budget"){
-  //   YewPar::Skeletons::API::Params<> searchParameters;
-  //   searchParameters.backtrackBudget = opts["backtrack-budget"].as<unsigned>();
-  //   searchParameters.maxDepth   = maxDepth;
-  //   counts = YewPar::Skeletons::Budget<NodeGen,
-  //                                      YewPar::Skeletons::API::Enumeration,
-  //                                      YewPar::Skeletons::API::Enumerator<CountDepths>,
-  //                                      YewPar::Skeletons::API::DepthLimited>
-  //       ::search(Empty(), root, searchParameters);
   // } else 
-  if (skeleton == "basicrandom") {
+  if (skeleton == "budget"){
+    YewPar::Skeletons::API::Params<> searchParameters;
+    searchParameters.backtrackBudget = opts["backtrack-budget"].as<unsigned>();
+    searchParameters.maxDepth   = maxDepth;
+    counts = YewPar::Skeletons::Budget<NodeGen,
+                                       YewPar::Skeletons::API::Enumeration,
+				       YewPar::Skeletons::API::Enumerator<CountDepths>,
+				       YewPar::Skeletons::API::DepthLimited>
+	     ::search(Empty(), root, searchParameters);
+  } else if (skeleton == "basicrandom") {
     srand((unsigned)time(NULL));  //initial the seed with sys time
     YewPar::Skeletons::API::Params<> searchParameters;
     searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>();
@@ -115,7 +115,7 @@ int hpx_main(boost::program_options::variables_map & opts) {
                                        YewPar::Skeletons::API::Enumeration,
                                        YewPar::Skeletons::API::Enumerator<CountDepths>,
                                        YewPar::Skeletons::API::DepthLimited>
-        ::search(Empty(), root, searchParameters);
+             ::search(Empty(), root, searchParameters);
   } else {
     hpx::cout << "Invalid skeleton type: " << skeleton << hpx::endl;
     return hpx::finalize();
