@@ -340,23 +340,23 @@ int hpx_main(boost::program_options::variables_map & opts) {
   // } else 
   if (skeletonType == "basicrandom") {
     srand((unsigned)time(NULL));  //initial the seed with sys time
-    if (decisionBound != 0) {
-    YewPar::Skeletons::API::Params<int> searchParameters;
-    searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>();
+    if (decisionBound != 0) {     //apply to different searches
+    YewPar::Skeletons::API::Params<int> searchParameters; //define the parameter for skeleton
+    searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>(); //get the parameter from command line
     searchParameters.expectedObjective = decisionBound;
     sol = YewPar::Skeletons::Random<GenNode,
                                     YewPar::Skeletons::API::BoundFunction<upperBound_func>,
                                     YewPar::Skeletons::API::Decision,
                                     YewPar::Skeletons::API::PruneLevel>
-        ::search(graph, root, searchParameters);
+        ::search(graph, root, searchParameters);  // pass all parameters to begin Decision search process
     } else {
       YewPar::Skeletons::API::Params<int> searchParameters;
-      searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>();
+      searchParameters.spawnProbability = opts["spawn-probability"].as<unsigned>(); //get the parameter from command line
       sol = YewPar::Skeletons::Random<GenNode,
                                       YewPar::Skeletons::API::Optimisation,
                                       YewPar::Skeletons::API::BoundFunction<upperBound_func>,
                                       YewPar::Skeletons::API::PruneLevel>
-          ::search(graph, root, searchParameters);
+          ::search(graph, root, searchParameters);  // pass all parameters to begin Optimisation search process
     }
   } else {
     hpx::cout << "Invalid skeleton type option. Should be: seq, depthbound, stacksteal or ordered" << hpx::endl;
@@ -403,6 +403,7 @@ int main (int argc, char* argv[]) {
     boost::program_options::value<int>()->default_value(0),
     "For Decision Skeletons. Size of the clique to search for"
     )
+    //define the parameter we want to get from command line
     ( "spawn-probability",
       boost::program_options::value<unsigned>()->default_value(1000000),
       "spawn probability for random skeleton should be 0-10^n"
