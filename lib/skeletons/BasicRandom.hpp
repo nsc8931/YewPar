@@ -93,14 +93,14 @@ struct Random {
       if (params.spawnProbability != 0) {
 	unsigned sp = (rand()<<15)+rand();
         if (sp < 1073741824/params.spawnProbability) {
-          // Spawn everything at the highest possible depth
+          // get all nodes of the highest depth
           for (auto i = 0; i < stackDepth; ++i) {
             if (genStack[i].seen < genStack[i].gen.numChildren) {
               while (genStack[i].seen < genStack[i].gen.numChildren) {
                 genStack[i].seen++;
                 childFutures.push_back(createTask(childDepth + i + 1, genStack[i].gen.next()));
               }
-              break;  //only spawn the highest one
+              break;  // only spawn the children of the first one in stack
             }
           }
         }
