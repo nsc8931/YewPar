@@ -1,3 +1,7 @@
+# This is the source code repo of Yixin Chen's MSc porject
+
+## The data and scripts can be found [Here](https://github.com/Nirvana-Chen/YewParData)
+
 # YewPar
 
 A Collection of High Performance Parallel Skeletons for Tree Search Problems
